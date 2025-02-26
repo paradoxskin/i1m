@@ -207,6 +207,7 @@ function s:SmartSpace()
 endfunction
 
 function s:SmartSem()
+    let s:typeLen = 0
     let temp = ""
     if pumvisible()
         if len(s:matchFrom) >= 2
