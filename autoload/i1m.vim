@@ -193,7 +193,7 @@ endfunction
 function s:PuncIn()
     let s:typeLen = 0
     if pumvisible()
-        return puncIn = "\<C-Y>"
+        return "\<C-Y>"
     endif
     return ''
 endfunction
