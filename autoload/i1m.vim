@@ -76,8 +76,10 @@ function s:InitSettings()
     let &l:paste = 0
     " imap
     call s:MapAnyKeys()
-    inoremap<buffer> <Space> <C-R>=<SID>SmartSpace()<CR>
+    inoremap<buffer> <Space> <C-R>=<SID>SmartFirst(" ")<CR>
     inoremap<buffer> ; <C-R>=<SID>SmartSem()<CR>
+    inoremap<buffer> 1 <C-R>=<SID>SmartFirst("1")<CR>
+    inoremap<buffer> 2 <C-R>=<SID>SmartSecond()<CR>
     inoremap<buffer> <CR> <C-R>=<SID>SmartEnter()<CR>
     inoremap<buffer> <BS> <C-R>=<SID>SmartBack()<CR>
     inoremap<buffer> <C-\> <C-R>=<SID>ToggleChinesePunc()<CR>
@@ -103,6 +105,8 @@ function s:ExitSettings()
     call s:UnmapAnyKeys()
     iunmap<buffer> <Space>
     iunmap<buffer> ;
+    iunmap<buffer> 1
+    iunmap<buffer> 2
     iunmap<buffer> <CR>
     iunmap<buffer> <BS>
     iunmap<buffer> <C-\>
@@ -198,12 +202,12 @@ function s:PuncIn()
     return ''
 endfunction
 
-function s:SmartSpace()
+function s:SmartFirst(c)
     let s:typeLen = 0
     if pumvisible()
         return "\<C-Y>"
     endif
-    return " "
+    return a:c
 endfunction
 
 function s:SmartSem()
@@ -216,6 +220,19 @@ function s:SmartSem()
         let temp .= "\<C-Y>"
     endif
     let temp .= [";", "；"][b:chinesePunc]
+    return temp
+endfunction
+
+function s:SmartSecond()
+    let s:typeLen = 0
+    let temp = ""
+    if pumvisible()
+        if len(s:matchFrom) >= 2
+            return "\<C-N>\<C-Y>"
+        endif
+        let temp .= "\<C-Y>"
+    endif
+    let temp .= "2"
     return temp
 endfunction
 
@@ -235,7 +252,7 @@ function s:SmartBack()
     if s:typeLen > 1
         let s:typeLen -= 1
         let p = getpos('.')
-        if getline('.')[p[2] - 3] !~# '\l'
+        if getline('.')[p[2] - 3 : p[2] - 2] !~# '\l\l'
             let s:typeLen = 0
             let s:matchFrom = []
             let bs = bs . "\<C-X>\<C-U>"
