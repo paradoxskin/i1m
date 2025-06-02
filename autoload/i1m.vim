@@ -259,7 +259,11 @@ function s:SmartBack()
         else
             call setpos('.', [p[0], p[1], p[2] - 1, p[3]])
             call s:RefreshMatch()
-            let bs = "\<Del>\<C-X>\<C-U>\<C-P>\<Down>"
+            if s:matchFrom == []
+                let bs = "\<Del>\<C-X>\<C-U>"
+            else
+                let bs = "\<Del>\<C-X>\<C-U>\<C-P>\<Down>"
+            endif
         endif
     else
         let s:typeLen = 0
